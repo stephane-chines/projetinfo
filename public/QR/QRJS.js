@@ -35,15 +35,15 @@ filtreVotes.textContent = "Votes";
 
 
 Chat.addEventListener("click", () => {
-  window.location.href = "http://localhost:3000/chat/chat.html";
+  window.location.href = "https://projetinfo.onrender.com/chat/chat.html";
 });
 
 Documents.addEventListener("click", () => {
-  window.location.href = "http://localhost:3000/documents/documents.html";
+  window.location.href = "https://projetinfo.onrender.com/documents/documents.html";
 });
 
 RetourLobby.addEventListener("click", () => {
-  window.location.href = "http://localhost:3000/Accueil/Accueil.html";
+  window.location.href = "https://projetinfo.onrender.com/Accueil/Accueil.html";
 });
 
 filtreVotes.addEventListener("click", (event) => {

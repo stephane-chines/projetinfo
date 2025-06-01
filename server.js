@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Redirige / vers le vrai point d’entrée
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'Connexion', 'connexion.html'));
+  res.sendFile(path.join(__dirname, 'public', 'QR', 'index.html'));
 });
 
 const pool = new Pool(
