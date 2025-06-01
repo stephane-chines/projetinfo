@@ -33,34 +33,16 @@ pool.connect((err, client, release) => {
   });
 });
 // Initialisation des tables si elles n'existent pas
-taskCreateTables();
-
 async function taskCreateTables() {
   const client = await pool.connect();
   try {
-    await client.query(`CREATE TABLE IF NOT EXISTS questions (
-      IDQuestion SERIAL PRIMARY KEY,
-      titre TEXT,
-      corps TEXT,
-      votes INT,
-      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      username TEXT,
+    // 1. Tables sans dépendances
+    await client.query(`CREATE TABLE IF NOT EXISTS document (
+      IDDocument SERIAL PRIMARY KEY,
       url TEXT,
-      IDUser INT,
-      IDReponse INT,
+      DateHeure TIMESTAMP,
       subject TEXT,
-      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
-      FOREIGN KEY(IDReponse) REFERENCES reponses(IDReponse)
-    )`);
-    await client.query(`CREATE TABLE IF NOT EXISTS reponses (
-      IDReponse SERIAL PRIMARY KEY,
-      IDQuestion INT,
-      username TEXT,
-      corps TEXT,
-      votes INT,
-      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      url TEXT,
-      FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
+      type TEXT
     )`);
 
     await client.query(`CREATE TABLE IF NOT EXISTS chat (
@@ -71,14 +53,7 @@ async function taskCreateTables() {
       subject TEXT
     )`);
 
-    await client.query(`CREATE TABLE IF NOT EXISTS document (
-      IDDocument SERIAL PRIMARY KEY,
-      url TEXT,
-      DateHeure TIMESTAMP,
-      subject TEXT,
-      type TEXT
-    )`);
-
+    // 2. Utilisateurs sans IDReponse FK pour casser boucle
     await client.query(`CREATE TABLE IF NOT EXISTS Utilisateurs (
       IDUser SERIAL PRIMARY KEY,
       motdepasse TEXT,
@@ -90,25 +65,60 @@ async function taskCreateTables() {
       admin BOOLEAN DEFAULT false,
       IDDocument INT,
       IDChat INT,
-      IDReponse INT,
       FOREIGN KEY(IDDocument) REFERENCES document(IDDocument),
-      FOREIGN KEY(IDChat) REFERENCES chat(IDChat),
-      FOREIGN KEY(IDReponse) REFERENCES reponses(IDReponse)
+      FOREIGN KEY(IDChat) REFERENCES chat(IDChat)
     )`);
 
-    
+    // 3. Questions sans IDReponse FK
+    await client.query(`CREATE TABLE IF NOT EXISTS questions (
+      IDQuestion SERIAL PRIMARY KEY,
+      titre TEXT,
+      corps TEXT,
+      votes INT,
+      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      username TEXT,
+      url TEXT,
+      IDUser INT,
+      subject TEXT,
+      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser)
+    )`);
 
+    // 4. Reponses
+    await client.query(`CREATE TABLE IF NOT EXISTS reponses (
+      IDReponse SERIAL PRIMARY KEY,
+      IDQuestion INT,
+      username TEXT,
+      corps TEXT,
+      votes INT,
+      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      url TEXT,
+      FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
+    )`);
+
+    // 5. Images
     await client.query(`CREATE TABLE IF NOT EXISTS Images (
       IDImages SERIAL PRIMARY KEY,
       IDQuestion INT,
       FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
     )`);
+
+    // 6. Ajout des colonnes FK circulaires et contraintes FK avec ALTER TABLE
+
+    // a) Ajout IDReponse dans Utilisateurs + FK
+    await client.query(`ALTER TABLE Utilisateurs ADD COLUMN IF NOT EXISTS IDReponse INT`);
+    await client.query(`ALTER TABLE Utilisateurs ADD CONSTRAINT IF NOT EXISTS fk_utilisateurs_idreponse FOREIGN KEY (IDReponse) REFERENCES reponses(IDReponse)`);
+
+    // b) Ajout IDReponse dans Questions + FK
+    await client.query(`ALTER TABLE questions ADD COLUMN IF NOT EXISTS IDReponse INT`);
+    await client.query(`ALTER TABLE questions ADD CONSTRAINT IF NOT EXISTS fk_questions_idreponse FOREIGN KEY (IDReponse) REFERENCES reponses(IDReponse)`);
+
   } catch (err) {
     console.error('Erreur création des tables :', err);
   } finally {
     client.release();
   }
 }
+
 
 // Routes POST et GET
 app.post('/api/question', async (req, res) => {
