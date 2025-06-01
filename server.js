@@ -38,6 +38,20 @@ taskCreateTables();
 async function taskCreateTables() {
   const client = await pool.connect();
   try {
+    await client.query(`CREATE TABLE IF NOT EXISTS questions (
+      IDQuestion SERIAL PRIMARY KEY,
+      titre TEXT,
+      corps TEXT,
+      votes INT,
+      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      username TEXT,
+      url TEXT,
+      IDUser INT,
+      IDReponse INT,
+      subject TEXT,
+      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
+      FOREIGN KEY(IDReponse) REFERENCES reponses(IDReponse)
+    )`);
     await client.query(`CREATE TABLE IF NOT EXISTS reponses (
       IDReponse SERIAL PRIMARY KEY,
       IDQuestion INT,
@@ -82,20 +96,7 @@ async function taskCreateTables() {
       FOREIGN KEY(IDReponse) REFERENCES reponses(IDReponse)
     )`);
 
-    await client.query(`CREATE TABLE IF NOT EXISTS questions (
-      IDQuestion SERIAL PRIMARY KEY,
-      titre TEXT,
-      corps TEXT,
-      votes INT,
-      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      username TEXT,
-      url TEXT,
-      IDUser INT,
-      IDReponse INT,
-      subject TEXT,
-      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
-      FOREIGN KEY(IDReponse) REFERENCES reponses(IDReponse)
-    )`);
+    
 
     await client.query(`CREATE TABLE IF NOT EXISTS Images (
       IDImages SERIAL PRIMARY KEY,
