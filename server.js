@@ -1,8 +1,10 @@
+require('dotenv').config(); // Charge les variables d'environnement
+
 const express = require('express');
 const { Pool } = require('pg');
 const path = require('path');
-const app = express();
 
+const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
