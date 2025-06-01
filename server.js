@@ -8,13 +8,20 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const pool = new Pool({
-  user: 'bddinfo_user',
-  host: 'dpg-d0u8fpc9c44c73ago1og-a',
-  database: 'bddinfo',
-  password: 'USRjowqt1ZFDT9LRTP0erD0w6zVfAGyA',
-  port: 5432,
-});
+const pool = new Pool(
+  process.env.DATABASE_URL
+    ? {
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false } // obligatoire sur Render ou Heroku
+      }
+    : {
+        user: process.env.PGUSER,
+        host: process.env.PGHOST,
+        database: process.env.PGDATABASE,
+        password: process.env.PGPASSWORD,
+        port: process.env.PGPORT
+      }
+);
 pool.connect((err, client, release) => {
   if (err) {
     return console.error('❌ Erreur de connexion à la base de données :', err.stack);
