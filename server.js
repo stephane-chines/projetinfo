@@ -16,133 +16,116 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Création des tables
-const createTables = async () => {
+// Initialisation des tables si elles n'existent pas
+taskCreateTables();
+
+async function taskCreateTables() {
+  const client = await pool.connect();
   try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS reponses (
-        IDReponse SERIAL PRIMARY KEY,
-        IDQuestion INT,
-        username TEXT,
-        corps TEXT,
-        votes INT DEFAULT 0,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        url TEXT,
-        FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
-      );
-    `);
+    await client.query(`CREATE TABLE IF NOT EXISTS reponses (
+      IDReponse SERIAL PRIMARY KEY,
+      IDQuestion INT,
+      username TEXT,
+      corps TEXT,
+      votes INT,
+      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      url TEXT,
+      FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
+    )`);
 
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS chat (
-        IDChat SERIAL PRIMARY KEY,
-        corps TEXT,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        username TEXT,
-        subject TEXT
-      );
-    `);
+    await client.query(`CREATE TABLE IF NOT EXISTS chat (
+      IDChat SERIAL PRIMARY KEY,
+      corps TEXT,
+      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      username TEXT,
+      subject TEXT
+    )`);
 
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS document (
-        IDDocument SERIAL PRIMARY KEY,
-        url TEXT,
-        DateHeure TIMESTAMP,
-        subject TEXT,
-        type TEXT
-      );
-    `);
+    await client.query(`CREATE TABLE IF NOT EXISTS document (
+      IDDocument SERIAL PRIMARY KEY,
+      url TEXT,
+      DateHeure TIMESTAMP,
+      subject TEXT,
+      type TEXT
+    )`);
 
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS Utilisateurs (
-        IDUser SERIAL PRIMARY KEY,
-        motdepasse TEXT,
-        nom TEXT,
-        prenom TEXT,
-        username TEXT,
-        email TEXT UNIQUE,
-        professeur INTEGER,
-        admin INTEGER DEFAULT 0,
-        IDDocument INT,
-        IDChat INT,
-        IDReponse INT,
-        FOREIGN KEY(IDDocument) REFERENCES document(IDDocument),
-        FOREIGN KEY(IDChat) REFERENCES chat(IDChat),
-        FOREIGN KEY(IDReponse) REFERENCES reponses(IDReponse)
-      );
-    `);
+    await client.query(`CREATE TABLE IF NOT EXISTS Utilisateurs (
+      IDUser SERIAL PRIMARY KEY,
+      motdepasse TEXT,
+      nom TEXT,
+      prenom TEXT,
+      username TEXT,
+      email TEXT,
+      professeur BOOLEAN,
+      admin BOOLEAN DEFAULT false,
+      IDDocument INT,
+      IDChat INT,
+      IDReponse INT,
+      FOREIGN KEY(IDDocument) REFERENCES document(IDDocument),
+      FOREIGN KEY(IDChat) REFERENCES chat(IDChat),
+      FOREIGN KEY(IDReponse) REFERENCES reponses(IDReponse)
+    )`);
 
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS questions (
-        IDQuestion SERIAL PRIMARY KEY,
-        titre TEXT,
-        corps TEXT,
-        votes INT DEFAULT 0,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        username TEXT,
-        url TEXT,
-        IDUser INT,
-        IDReponse INT,
-        subject TEXT,
-        FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
-        FOREIGN KEY(IDReponse) REFERENCES reponses(IDReponse)
-      );
-    `);
+    await client.query(`CREATE TABLE IF NOT EXISTS questions (
+      IDQuestion SERIAL PRIMARY KEY,
+      titre TEXT,
+      corps TEXT,
+      votes INT,
+      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      username TEXT,
+      url TEXT,
+      IDUser INT,
+      IDReponse INT,
+      subject TEXT,
+      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
+      FOREIGN KEY(IDReponse) REFERENCES reponses(IDReponse)
+    )`);
 
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS Images (
-        IDImages SERIAL PRIMARY KEY,
-        IDQuestion INT,
-        FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
-      );
-    `);
-
-    console.log("Tables créées");
+    await client.query(`CREATE TABLE IF NOT EXISTS Images (
+      IDImages SERIAL PRIMARY KEY,
+      IDQuestion INT,
+      FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
+    )`);
   } catch (err) {
-    console.error("Erreur lors de la création des tables :", err);
+    console.error('Erreur création des tables :', err);
+  } finally {
+    client.release();
   }
-};
+}
 
-createTables();
-
-// Routes identiques, sauf pour les requêtes SQL (avec $1, $2...)
+// Routes POST et GET
 app.post('/api/question', async (req, res) => {
-  let { titre, corps, username, votes } = req.body;
+  const { titre, corps, username = 'Utilisateur Anonyme', votes = 0 } = req.body;
   if (!titre) return res.status(400).json({ error: "Le titre est obligatoire" });
-  if (!username) username = 'Utilisateur Anonyme';
-  if (!votes) votes = 0;
 
   try {
     const result = await pool.query(
-      'INSERT INTO questions (titre, corps, username, votes) VALUES ($1, $2, $3, $4) RETURNING IDQuestion',
+      'INSERT INTO questions (titre, corps, username, votes) VALUES ($1, $2, $3, $4) RETURNING *',
       [titre, corps, username, votes]
     );
-    res.json({ IDQuestion: result.rows[0].idquestion, titre, corps, username, votes, date: new Date().toISOString() });
+    res.json({ ...result.rows[0] });
   } catch (err) {
-    console.error("Erreur PostgreSQL :", err);
+    console.error("Erreur PostgreSQL lors de l'insertion :", err);
     res.status(500).json({ error: "Erreur lors de l'insertion" });
   }
 });
 
 app.post('/api/reponse', async (req, res) => {
-  let { IDQuestion, corps, username, votes } = req.body;
+  const { IDQuestion, corps, username = 'Utilisateur Anonyme', votes = 0 } = req.body;
   if (!IDQuestion || !corps) return res.status(400).json({ error: "IDQuestion et corps sont obligatoires" });
-  if (!username) username = 'Utilisateur Anonyme';
-  if (!votes) votes = 0;
 
   try {
     const result = await pool.query(
-      'INSERT INTO reponses (IDQuestion, corps, username, votes) VALUES ($1, $2, $3, $4) RETURNING IDReponse',
+      'INSERT INTO reponses (IDQuestion, corps, username, votes) VALUES ($1, $2, $3, $4) RETURNING *',
       [IDQuestion, corps, username, votes]
     );
-    res.json({ IDReponse: result.rows[0].idreponse, IDQuestion, corps, username, votes, date: new Date().toISOString() });
+    res.json(result.rows[0]);
   } catch (err) {
-    console.error("Erreur PostgreSQL :", err);
+    console.error("Erreur PostgreSQL lors de l'insertion de la réponse :", err);
     res.status(500).json({ error: "Erreur lors de l'insertion de la réponse" });
   }
 });
 
-// Tu continues avec le même principe pour les autres routes
-// Exemple GET :
 app.get('/get-question', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM questions');
@@ -153,7 +136,35 @@ app.get('/get-question', async (req, res) => {
   }
 });
 
-// Exemple POST connexion :
+app.get('/get-chat/:subject', async (req, res) => {
+  const subject = req.params.subject;
+  try {
+    const result = await pool.query('SELECT * FROM chat WHERE subject = $1', [subject]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Erreur PostgreSQL lors de la lecture du chat :", err);
+    res.status(500).json({ error: "Erreur lors de la lecture du chat" });
+  }
+});
+
+// ... Tu peux continuer avec les autres routes exactement de la même manière en convertissant `db.run` et `db.get` en `await pool.query(...)`
+
+app.post('/api/inscription', async (req, res) => {
+  const { email, motdepasse, prenom, nom, professeur, username } = req.body;
+  if (!email || !motdepasse) return res.status(400).json({ error: "Email et mot de passe requis" });
+
+  try {
+    await pool.query(
+      'INSERT INTO Utilisateurs (email, motdepasse, prenom, nom, professeur, username) VALUES ($1, $2, $3, $4, $5, $6)',
+      [email, motdepasse, prenom, nom, professeur, username]
+    );
+    res.json({ email, motdepasse, prenom, nom, professeur, username });
+  } catch (err) {
+    console.error("Erreur PostgreSQL lors de l'insertion :", err);
+    res.status(500).json({ error: "Erreur lors de l'insertion" });
+  }
+});
+
 app.post('/api/connexion', async (req, res) => {
   const { email, motdepasse } = req.body;
   if (!email || !motdepasse) return res.status(400).json({ error: "Email et mot de passe requis" });
@@ -163,17 +174,15 @@ app.post('/api/connexion', async (req, res) => {
       'SELECT * FROM Utilisateurs WHERE email = $1 AND motdepasse = $2',
       [email, motdepasse]
     );
-
-    if (result.rowCount === 0) return res.status(401).json({ error: "Email ou mot de passe incorrect" });
-
     const user = result.rows[0];
+    if (!user) return res.status(401).json({ error: "Email ou mot de passe incorrect" });
     res.json({ message: "Connexion réussie", prenom: user.prenom, nom: user.nom, username: user.username });
   } catch (err) {
-    console.error("Erreur PostgreSQL lors de la vérification :", err);
+    console.error("Erreur PostgreSQL lors de la connexion :", err);
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
 app.listen(3000, () => {
-  console.log('Serveur PostgreSQL démarré sur http://localhost:3000');
+  console.log('Serveur démarré sur http://localhost:3000');
 });
