@@ -22,24 +22,8 @@ const pool = new Pool(
         port: process.env.PGPORT
       }
 );
-pool.connect((err, client, release) => {
-  if (err) {
-    return console.error('❌ Erreur de connexion à la base de données :', err.stack);
-  }
-  console.log('✅ Connexion à la base de données réussie !');
 
-  // Requête simple pour tester
-  client.query('SELECT NOW()', (err, result) => {
-    release(); // Toujours libérer le client après usage
-
-    if (err) {
-      return console.error('❌ Erreur lors de la requête :', err.stack);
-    }
-
-    console.log('🕒 Heure actuelle depuis la base :', result.rows[0].now);
-  });
-});
-// Initialisation des tables si elles n'existent pas
+// Fonction async pour créer les tables
 async function taskCreateTables() {
   const client = await pool.connect();
   try {
@@ -126,8 +110,8 @@ async function taskCreateTables() {
   }
 }
 
+// Routes POST et GET restent inchangées, elles utilisent déjà async/await
 
-// Routes POST et GET
 app.post('/api/question', async (req, res) => {
   const { titre, corps, username = 'Utilisateur Anonyme', votes = 0 } = req.body;
   if (!titre) return res.status(400).json({ error: "Le titre est obligatoire" });
@@ -181,8 +165,6 @@ app.get('/get-chat/:subject', async (req, res) => {
   }
 });
 
-// ... Tu peux continuer avec les autres routes exactement de la même manière en convertissant `db.run` et `db.get` en `await pool.query(...)`
-
 app.post('/api/inscription', async (req, res) => {
   const { email, motdepasse, prenom, nom, professeur, username } = req.body;
   if (!email || !motdepasse) return res.status(400).json({ error: "Email et mot de passe requis" });
@@ -217,8 +199,31 @@ app.post('/api/connexion', async (req, res) => {
   }
 });
 
-// Écoute sur le port fourni par Render, sinon 3000 par défaut
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Serveur démarré sur https://projetinfo.onrender.com`);
-});
+// Fonction principale pour tester la connexion, créer les tables et démarrer le serveur
+async function startServer() {
+  try {
+    const client = await pool.connect();
+    try {
+      const result = await client.query('SELECT NOW()');
+      console.log('🕒 Heure actuelle depuis la base :', result.rows[0].now);
+    } finally {
+      client.release();
+    }
+
+    // Crée les tables avant de démarrer le serveur
+    await taskCreateTables();
+
+    // Démarre le serveur
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`Serveur démarré sur http://localhost:${PORT}`);
+    });
+
+  } catch (err) {
+    console.error('❌ Erreur lors de la connexion à la base ou démarrage du serveur :', err);
+    process.exit(1); // Quitte le process en cas d'erreur critique
+  }
+}
+
+// Lance tout
+startServer();
