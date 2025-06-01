@@ -220,5 +220,5 @@ app.post('/api/connexion', async (req, res) => {
 // Écoute sur le port fourni par Render, sinon 3000 par défaut
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Serveur démarré sur http://localhost:${PORT}`);
+  console.log(`Serveur démarré sur https://projetinfo.onrender.com`);
 });
