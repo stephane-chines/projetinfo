@@ -217,6 +217,8 @@ app.post('/api/connexion', async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Serveur démarré sur http://localhost:3000');
+// Écoute sur le port fourni par Render, sinon 3000 par défaut
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });
