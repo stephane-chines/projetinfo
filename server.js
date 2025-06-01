@@ -15,7 +15,23 @@ const pool = new Pool({
   password: 'USRjowqt1ZFDT9LRTP0erD0w6zVfAGyA',
   port: 5432,
 });
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('❌ Erreur de connexion à la base de données :', err.stack);
+  }
+  console.log('✅ Connexion à la base de données réussie !');
 
+  // Requête simple pour tester
+  client.query('SELECT NOW()', (err, result) => {
+    release(); // Toujours libérer le client après usage
+
+    if (err) {
+      return console.error('❌ Erreur lors de la requête :', err.stack);
+    }
+
+    console.log('🕒 Heure actuelle depuis la base :', result.rows[0].now);
+  });
+});
 // Initialisation des tables si elles n'existent pas
 taskCreateTables();
 
