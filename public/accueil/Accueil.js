@@ -24,61 +24,61 @@ const recherche = document.getElementById("recherche");
 
 
 Analyse_des_Signaux.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Analyse_des_Signaux/Analyse_des_Signaux.html";
+    window.location.href = "https://projetinfo.onrender.com/Analyse_des_Signaux/Analyse_des_Signaux.html";
 });
 Automatique.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Automatique/Automatique.html";
+    window.location.href = "https://projetinfo.onrender.com/Automatique/Automatique.html";
 });
 Base_de_données.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Base_de_donnees/Base_de_donnees.html";
+    window.location.href = "https://projetinfo.onrender.com/Base_de_donnees/Base_de_donnees.html";
 });
 Comptabilité.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Comptabilite/Comptabilite.html";
+    window.location.href = "https://projetinfo.onrender.com/Comptabilite/Comptabilite.html";
 });
 Economie.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Economie/Economie.html";
+    window.location.href = "https://projetinfo.onrender.com/Economie/Economie.html";
 });
 Elec.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Electronique_analogique/Electronique_analogique.html";
+    window.location.href = "https://projetinfo.onrender.com/Electronique_analogique/Electronique_analogique.html";
 });
 Microcontroleur.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Microcontroleur/Microcontroleur.html";
+    window.location.href = "https://projetinfo.onrender.com/Microcontroleur/Microcontroleur.html";
 });
 FPGA.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/FPGA/FPGA.html";
+    window.location.href = "https://projetinfo.onrender.com/FPGA/FPGA.html";
 });
 Ethique.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Ethique/Ethique.html";
+    window.location.href = "https://projetinfo.onrender.com/Ethique/Ethique.html";
 });
 Gestion_de_projet.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Gestion_de_projet/Gestion_de_projet.html";
+    window.location.href = "https://projetinfo.onrender.com/Gestion_de_projet/Gestion_de_projet.html";
 });
 Langage_C.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Langage_C/Langage_C.html";
+    window.location.href = "https://projetinfo.onrender.com/Langage_C/Langage_C.html";
 });
 Marketing.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Marketing/Marketing.html";
+    window.location.href = "https://projetinfo.onrender.com/Marketing/Marketing.html";
 });
 Mécanique_quantique.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Mecanique_quantique/Mecanique_quantique.html";
+    window.location.href = "https://projetinfo.onrender.com/Mecanique_quantique/Mecanique_quantique.html";
 });
 Oddysée.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Oddysee/Oddysee.html";
+    window.location.href = "https://projetinfo.onrender.com/Oddysee/Oddysee.html";
 });
 PDS.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Physique_du_Solide/Physique_du_Solide.html";
+    window.location.href = "https://projetinfo.onrender.com/Physique_du_Solide/Physique_du_Solide.html";
 });
 Proba.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Probabilites_Statistiques/Probabilites_Statistiques.html";
+    window.location.href = "https://projetinfo.onrender.com/Probabilites_Statistiques/Probabilites_Statistiques.html";
 });
 POO.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/POO/POO.html";
+    window.location.href = "https://projetinfo.onrender.com/POO/POO.html";
 });
 Réseau.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Reseau/Reseau.html";
+    window.location.href = "https://projetinfo.onrender.com/Reseau/Reseau.html";
 });
 Transfo.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/Transformation_Integrales/Transformation_Integrales.html";
+    window.location.href = "https://projetinfo.onrender.com/Transformation_Integrales/Transformation_Integrales.html";
 });
 
 
@@ -117,6 +117,6 @@ const DefaultUser ="Utilisateur Anonyme";
 
 logout.addEventListener("click",(event) => {
     localStorage.setItem("username", DefaultUser);
-    window.location.href = 'http://localhost:3000/Connexion/Connexion.html';
+    window.location.href = 'https://projetinfo.onrender.com/Connexion/Connexion.html';
 
 })

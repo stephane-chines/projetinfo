@@ -19,11 +19,11 @@ BoutonConnexion.addEventListener('click', () => {
             alert("Email ou mot de passe incorrect !");
         } else {
             localStorage.setItem("username", data.username);
-            window.location.href = 'http://localhost:3000/QR/index.html';
+            window.location.href = 'https://projetinfo.onrender.com/QR/index.html';
         }
     }); 
 })
 
 BoutonInscription.addEventListener('click', () => {
-    window.location.href = 'http://localhost:3000/Inscription/Inscription.html';
+    window.location.href = 'https://projetinfo.onrender.com/Inscription/Inscription.html';
 })

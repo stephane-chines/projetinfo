@@ -23,7 +23,7 @@ BoutonInscription.addEventListener('click', () => {
     })
     .then(res => res.json())
     .then(data => {
-        window.location.href = 'http://localhost:3000/Connexion/Connexion.html';
+        window.location.href = 'https://projetinfo.onrender.com/Connexion/Connexion.html';
     });         
 }   
         Email.value="";
@@ -32,5 +32,5 @@ BoutonInscription.addEventListener('click', () => {
 
 
 BoutonRetour.addEventListener('click', () => {
-    window.location.href = 'http://localhost:3000/Connexion/Connexion.html';
+    window.location.href = 'https://projetinfo.onrender.com/Connexion/Connexion.html';
 })
