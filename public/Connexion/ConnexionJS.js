@@ -25,5 +25,5 @@ BoutonConnexion.addEventListener('click', () => {
 })
 
 BoutonInscription.addEventListener('click', () => {
-    window.location.href = 'https://projetinfo.onrender.com/Inscription/Inscription.html';
+    window.location.href = 'https://projetinfo.onrender.com/Inscription/inscription.html';
 })
