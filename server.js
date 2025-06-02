@@ -154,7 +154,8 @@ async function startServer() {
       res.json(result.rows[0]);
     } catch (err) {
       console.error("Erreur PostgreSQL lors de l'insertion :", err);
-      res.status(500).json({ error: "Erreur lors de l'insertion" });
+      res.status(500).json({ error: "Erreur serveur", details: err.message });
+
     }
   });
 
@@ -170,7 +171,8 @@ async function startServer() {
       res.json(result.rows[0]);
     } catch (err) {
       console.error("Erreur PostgreSQL lors de l'insertion de la réponse :", err);
-      res.status(500).json({ error: "Erreur lors de l'insertion de la réponse" });
+      res.status(500).json({ error: "Erreur serveur", details: err.message });
+
     }
   });
 
@@ -180,7 +182,8 @@ async function startServer() {
       res.json(result.rows);
     } catch (err) {
       console.error("Erreur PostgreSQL lors de la lecture :", err);
-      res.status(500).json({ error: "Erreur lors de la lecture" });
+      res.status(500).json({ error: "Erreur serveur", details: err.message });
+
     }
   });
 

@@ -248,7 +248,7 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
 
   function renderAllReponses() {
     let Réponses = [];
-    fetch('/get-reponses/' + IDQuestion)
+    fetch('/get-reponses/' + IDQuestion.ID)
       .then(res => res.json())
       .then(data => {
         Réponses.length = 0;
