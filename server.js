@@ -208,6 +208,66 @@ async function startServer() {
       res.status(500).json({ error: "Erreur lors de la lecture des réponses" });
     }
   });
+  app.get('/get-nb-reponses/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+      const result = await pool.query(
+       'SELECT COUNT(*) AS nbReponses FROM reponses WHERE IDQuestion = $1',
+        [id]
+    );
+      res.json({ nbReponses: parseInt(result.rows[0].nbreponses, 10) });
+    } catch (err) {
+     console.error("❌ Erreur PostgreSQL lors de la lecture du nombre de réponses :", err);
+     res.status(500).json({ error: "Erreur lors de la lecture du nombre de réponses" });
+    }
+  });
+  app.get('/get-votes-reponse/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+      const result = await pool.query(
+        'SELECT votes FROM reponses WHERE IDReponse = $1',
+        [id]
+      );
+      const row = result.rows[0];
+      if (!row) return res.status(404).json({ error: "Réponse non trouvée" });
+      res.json({ votes: row.votes });
+    } catch (err) {
+      console.error("❌ Erreur PostgreSQL lors de la lecture des votes :", err);
+     res.status(500).json({ error: "Erreur lors de la lecture des votes" });
+    }
+  });
+  app.get('/get-votes-question/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+      const result = await pool.query(
+        'SELECT votes FROM questions WHERE IDQuestion = $1',
+       [id]
+      );
+      const row = result.rows[0];
+      if (!row) return res.status(404).json({ error: "Question non trouvée" });
+      res.json({ votes: row.votes });
+    } catch (err) {
+      console.error("❌ Erreur PostgreSQL lors de la lecture des votes :", err);
+      res.status(500).json({ error: "Erreur lors de la lecture des votes" });
+    }
+  });
+  app.get('/get-nb-chats/:subject', async (req, res) => {
+    const subject = req.params.subject;
+    try {
+      const result = await pool.query(
+        'SELECT COUNT(*) AS nbChats FROM chat WHERE subject = $1',
+        [subject]
+      );
+      res.json({ nbchats: parseInt(result.rows[0].nbchats, 10) });
+    } catch (err) {
+      console.error("❌ Erreur PostgreSQL lors de la lecture du nombre de chats :", err);
+      res.status(500).json({ error: "Erreur lors de la lecture du nombre de chats" });
+    }
+  });
+
+
+
+
 
 
   app.post('/api/inscription', async (req, res) => {
