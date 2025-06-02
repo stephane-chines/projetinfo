@@ -117,6 +117,6 @@ const DefaultUser ="Utilisateur Anonyme";
 
 logout.addEventListener("click",(event) => {
     localStorage.setItem("username", DefaultUser);
-    window.location.href = 'https://projetinfo.onrender.com/Connexion/Connexion.html';
+    window.location.href = 'https://projetinfo.onrender.com/Connexion/connexion.html';
 
 })
