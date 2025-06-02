@@ -15,7 +15,6 @@ BoutonInscription.addEventListener('click', () => {
     if (nom.includes('1') || nom.includes('2') ) {
         nom= nom.replace(/[1-2]/g, '');
     }
-    const username = `${prenom}.${nom}`.toLowerCase();
     if (mail.includes('junia.com') && motdepasse === confirmMotdepasse) {
         fetch('/api/inscription', {
             method: 'POST',
