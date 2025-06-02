@@ -104,7 +104,7 @@ async function taskCreateTables() {
       IDQuestion INT,
       username TEXT,
       corps TEXT,
-      votes INT,
+      votes INT DEFAULT 0,
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       url TEXT,
       FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
