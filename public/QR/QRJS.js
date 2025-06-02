@@ -1,6 +1,13 @@
 const username = localStorage.getItem("username");
 
+data.forEach((question) => {
+  const IDQuestion = parseInt(question.ID, 10);
+  console.log("IDQuestion type:", typeof IDQuestion, "value:", IDQuestion); // 👈 AJOUT ICI
 
+  if (isNaN(IDQuestion)) {
+    console.error("IDQuestion invalide:", question.ID);
+    return; // ou continue
+  }
 fetch('/get-question')
   .then(res => res.json())
   .then(data => {
