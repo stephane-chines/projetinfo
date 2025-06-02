@@ -194,7 +194,21 @@ async function startServer() {
       res.status(500).json({ error: "Erreur lors de la lecture du chat" });
     }
   });
-  
+  app.get('/get-reponses/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      const result = await pool.query(
+        'SELECT * FROM reponses WHERE IDQuestion = $1 ORDER BY date ASC',
+        [id]
+    );
+      res.json(result.rows);
+    } catch (err) {
+      console.error("❌ Erreur PostgreSQL lors de la lecture des réponses :", err);
+      res.status(500).json({ error: "Erreur lors de la lecture des réponses" });
+    }
+  });
+
 
   app.post('/api/inscription', async (req, res) => {
     const { email, motdepasse, prenom, nom, professeur, username } = req.body;
