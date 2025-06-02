@@ -90,7 +90,7 @@ async function taskCreateTables() {
       IDQuestion SERIAL PRIMARY KEY,
       titre TEXT,
       corps TEXT,
-      votes INT DEFAULT 0,
+      votes INT ,
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       username TEXT,
       url TEXT,
@@ -104,7 +104,7 @@ async function taskCreateTables() {
       IDQuestion INT,
       username TEXT,
       corps TEXT,
-      votes INT DEFAULT 0,
+      votes INT,
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       url TEXT,
       FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
