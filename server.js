@@ -195,7 +195,8 @@ async function startServer() {
     }
   });
   app.get('/get-reponses/:id', async (req, res) => {
-    const id = req.params.id;
+    const id = parseInt(req.params.id, 10);
+
 
     try {
       const result = await pool.query(
@@ -209,7 +210,8 @@ async function startServer() {
     }
   });
   app.get('/get-nb-reponses/:id', async (req, res) => {
-    const id = req.params.id;
+    const id = parseInt(req.params.id, 10);
+
     try {
       const result = await pool.query(
        'SELECT COUNT(*) AS nbReponses FROM reponses WHERE IDQuestion = $1',
@@ -222,7 +224,8 @@ async function startServer() {
     }
   });
   app.get('/get-votes-reponse/:id', async (req, res) => {
-    const id = req.params.id;
+    const id = parseInt(req.params.id, 10);
+
     try {
       const result = await pool.query(
         'SELECT votes FROM reponses WHERE IDReponse = $1',
@@ -237,7 +240,8 @@ async function startServer() {
     }
   });
   app.get('/get-votes-question/:id', async (req, res) => {
-    const id = req.params.id;
+    const id = parseInt(req.params.id, 10);
+
     try {
       const result = await pool.query(
         'SELECT votes FROM questions WHERE IDQuestion = $1',
@@ -290,7 +294,7 @@ async function startServer() {
     const { email, motdepasse } = req.body;
     if (!email || !motdepasse) return res.status(400).json({ error: "Email et mot de passe requis" });
 
-    try {
+    try { 
       const result = await pool.query(
         'SELECT * FROM Utilisateurs WHERE email = $1 AND motdepasse = $2',
         [email, motdepasse]
