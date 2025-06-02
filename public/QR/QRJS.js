@@ -43,7 +43,7 @@ Documents.addEventListener("click", () => {
 });
 
 RetourLobby.addEventListener("click", () => {
-  window.location.href = "https://projetinfo.onrender.com/Accueil/Accueil.html";
+  window.location.href = "https://projetinfo.onrender.com/accueil/Accueil.html";
 });
 
 filtreVotes.addEventListener("click", (event) => {
