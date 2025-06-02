@@ -234,12 +234,7 @@ fetch('/get-votes-question/' + IDQuestion)
   });
 
 
-  const ConteneurBouton = document.createElement("div");
-
-  ConteneurBouton.className = "bloc-vote";
-  ConteneurBouton.style.display = "flex";
-  ConteneurBouton.style.margin = "0px";
-  ConteneurBouton.appendChild(boutonVote);
+ 
 
   const BoutonRéponses = document.createElement("button");
   BoutonRéponses.className = "bouton-reponses";
