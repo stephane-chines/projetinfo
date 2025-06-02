@@ -35,7 +35,7 @@ filtreVotes.textContent = "Votes";
 
 
 Chat.addEventListener("click", () => {
-  window.location.href = "https://projetinfo.onrender.com/chat/chat.html";
+  window.location.href = "https://projetinfo.onrender.com/Chat/chat.html";
 });
 
 Documents.addEventListener("click", () => {
