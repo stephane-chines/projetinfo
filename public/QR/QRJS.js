@@ -199,42 +199,39 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
 
 
   const boutonVote = document.createElement("button");
+  // On récupère le nombre de votes pour la question depuis la BDD
+  fetch('/get-votes-question/' + IDQuestion)
+    .then(res => res.json())
+    .then(data => {
+      votes = data.votes
+    })
+  if (votes === null) {
+    votes = 0;
+  }
+  boutonVote.className = "bouton-vote";
+  boutonVote.innerHTML = `${SVGBoutonVote}${votes}</span></strong>`;
 
-fetch('/get-votes-question/' + IDQuestion)
-  .then(res => res.json())
-  .then(data => {
-    let votes = data.votes;
-    if (votes === null || votes === undefined) {
-      votes = 0;
-    }
 
-    boutonVote.className = "bouton-vote";
+  boutonVote.addEventListener("click", (event) => {
+    event.stopPropagation();
+    // On incrémente le nombre de votes dans la BDD et on met à jour l'affichage
+    // Ce qui permet d'éviter de faire une nouvelle requête pour récupérer le nombre de votes
+    votes++;
+    fetch('/api/vote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ IDQuestion: IDQuestion })
+    })
+      .catch(err => console.error("Erreur lors du vote :", err));
     boutonVote.innerHTML = `${SVGBoutonVote}${votes}</span></strong>`;
-
-    boutonVote.addEventListener("click", (event) => {
-      event.stopPropagation();
-      votes++;
-      fetch('/api/vote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ IDQuestion: IDQuestion })
-      }).catch(err => console.error("Erreur lors du vote :", err));
-
-      boutonVote.innerHTML = `${SVGBoutonVote}${votes}</span></strong>`;
-    });
-
-    const ConteneurBouton = document.createElement("div");
-    ConteneurBouton.className = "bloc-vote";
-    ConteneurBouton.style.display = "flex";
-    ConteneurBouton.style.margin = "0px";
-    ConteneurBouton.appendChild(boutonVote);
-
-    // Ici tu peux ajouter ConteneurBouton au DOM, par ex. :
-    // someParentElement.appendChild(ConteneurBouton);
   });
 
+  const ConteneurBouton = document.createElement("div");
 
- 
+  ConteneurBouton.className = "bloc-vote";
+  ConteneurBouton.style.display = "flex";
+  ConteneurBouton.style.margin = "0px";
+  ConteneurBouton.appendChild(boutonVote);
 
   const BoutonRéponses = document.createElement("button");
   BoutonRéponses.className = "bouton-reponses";
