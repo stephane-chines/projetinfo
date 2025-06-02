@@ -90,7 +90,7 @@ async function taskCreateTables() {
       IDQuestion SERIAL PRIMARY KEY,
       titre TEXT,
       corps TEXT,
-      votes INT,
+      votes INT DEFAULT 0,
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       username TEXT,
       url TEXT,
