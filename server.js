@@ -194,6 +194,7 @@ async function startServer() {
       res.status(500).json({ error: "Erreur lors de la lecture du chat" });
     }
   });
+  
 
   app.post('/api/inscription', async (req, res) => {
     const { email, motdepasse, prenom, nom, professeur, username } = req.body;
@@ -225,6 +226,22 @@ async function startServer() {
       res.json({ message: "Connexion réussie", prenom: user.prenom, nom: user.nom, username: user.username });
     } catch (err) {
       console.error("Erreur PostgreSQL lors de la connexion :", err);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app.post('/api/upvote', async (req, res) => {
+    const { IDQuestion } = req.body;
+    if (!IDQuestion) return res.status(400).json({ error: "IDQuestion requis" });
+
+    try {
+      const result = await pool.query(
+        'UPDATE questions SET votes = votes + 1 WHERE IDQuestion = $1 RETURNING votes',
+        [IDQuestion]
+      );
+      if (result.rowCount === 0) return res.status(404).json({ error: "Question non trouvée" });
+      res.json({ votes: result.rows[0].votes });
+    } catch (err) {
+      console.error("❌ Erreur upvote :", err);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
