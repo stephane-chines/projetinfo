@@ -149,11 +149,7 @@ async function taskCreateTables() {
       FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
     )`);
 
-    // 2. Ajout colonnes FK circulaires si elles n'existent pas
     
-    
-
-    // 3. Ajout contraintes FK circulaires si inexistantes
     
    
 
