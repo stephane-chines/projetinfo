@@ -130,7 +130,7 @@ async function taskCreateTables() {
       IDUser INT,
       subject TEXT,
       FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
-      FOREIGN KEY(subjectID) REFERENCES Subject(IDSubject)
+      FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject)
     )`);
 
     await client.query(`CREATE TABLE IF NOT EXISTS reponses (
