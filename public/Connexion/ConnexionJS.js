@@ -30,7 +30,7 @@ BoutonConnexion.addEventListener('click', () => {
             localStorage.setItem("username", data.username);
 
             // Redirection vers l'accueil
-            window.location.href = '/Accueil/Accueil.html';
+            window.location.href = '/accueil/Accueil.html';
         }
     })
     .catch(error => {
