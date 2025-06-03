@@ -94,15 +94,7 @@ async function taskCreateTables() {
 
 
 
-    await client.query(`CREATE TABLE IF NOT EXISTS chat (
-      IDChat SERIAL PRIMARY KEY,
-      corps TEXT,
-      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      username TEXT,
-      IDSubject INT,
-      FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject)
-      
-    )`);
+    
 
     await client.query(`CREATE TABLE IF NOT EXISTS Utilisateurs (
       IDUser SERIAL PRIMARY KEY,
@@ -113,54 +105,57 @@ async function taskCreateTables() {
       email TEXT,
       professeur BOOLEAN,
       admin BOOLEAN DEFAULT false,
-      IDDocument INT,
-      IDChat INT,
-      FOREIGN KEY(IDDocument) REFERENCES document(IDDocument),
-      FOREIGN KEY(IDChat) REFERENCES chat(IDChat)
+      
     )`);
-
+    await client.query(`CREATE TABLE IF NOT EXISTS chat (
+      IDChat SERIAL PRIMARY KEY,
+      corps TEXT,
+      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      username TEXT,
+      IDSubject INT,
+      FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject)
+      FOREIGN KEY(IDuser) REFERENCES Utilisateurs(IDUser)
+    )`);
     await client.query(`CREATE TABLE IF NOT EXISTS questions (
       IDQuestion SERIAL PRIMARY KEY,
       titre TEXT,
       corps TEXT,
       votes INT ,
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      username TEXT,
-      url TEXT,
       IDUser INT,
-      subject TEXT,
+      IDSubject TEXT,
+      FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject),
       FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
-      FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject)
+      
     )`);
 
     await client.query(`CREATE TABLE IF NOT EXISTS reponses (
       IDReponse SERIAL PRIMARY KEY,
       IDQuestion INT,
-      username TEXT,
+      
       corps TEXT,
       votes INT,
+      IDUSER INT,
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      url TEXT,
+      
       FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
+      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
     )`);
 
     await client.query(`CREATE TABLE IF NOT EXISTS Images (
       IDImages SERIAL PRIMARY KEY,
       IDQuestion INT,
+      url TEXT,
       FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
     )`);
 
     // 2. Ajout colonnes FK circulaires si elles n'existent pas
-    await client.query(`ALTER TABLE Utilisateurs ADD COLUMN IF NOT EXISTS IDReponse INT`);
-    await client.query(`ALTER TABLE questions ADD COLUMN IF NOT EXISTS IDReponse INT`);
+    
+    
 
     // 3. Ajout contraintes FK circulaires si inexistantes
-    if (!(await constraintExists(client, 'Utilisateurs', 'fk_utilisateurs_idreponse'))) {
-      await client.query(`ALTER TABLE Utilisateurs ADD CONSTRAINT fk_utilisateurs_idreponse FOREIGN KEY (IDReponse) REFERENCES reponses(IDReponse)`);
-    }
-    if (!(await constraintExists(client, 'questions', 'fk_questions_idreponse'))) {
-      await client.query(`ALTER TABLE questions ADD CONSTRAINT fk_questions_idreponse FOREIGN KEY (IDReponse) REFERENCES reponses(IDReponse)`);
-    }
+    
+   
 
     console.log('✅ Tables et contraintes créées ou vérifiées avec succès');
   } catch (err) {
