@@ -1,15 +1,26 @@
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
 html,
 body {
-    background-color: #f06b42;
+    background-color: antiquewhite;
     margin: 0;
     padding: 0;
     height: 100%;
+    scrollbar-width: none;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
 }
 
 #page {
     display: flex;
     height: 100vh;
+}
+
+#contenu {
+    margin-left: 200px;
+    flex-grow: 1;
+    padding: 20px;
 }
 
 #menu {
@@ -24,14 +35,29 @@ body {
     /* Aligne à gauche (optionnel) */
     gap: 0.5rem;
     /* Espace entre les boutons */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
+    box-shadow: 0 0px 8px rgba(0, 0, 0, 1);
 }
 
-#menu button {
+#bouton-menu {
+    width: 130px;
+    height: 130px;
+    margin-left: 32px;
+    text-align: left;
+    margin-top: 20px;
+    background-color: #3f2a56;
+    border: none;
+    cursor: pointer;
+}
+
+.menu {
     width: 170px;
     margin-left: 10px;
     padding: 10px;
     background-color: #3f2a56;
     color: antiquewhite;
+    text-align: left;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
     border: none;
     cursor: pointer;
     font-size: 16px;
@@ -46,68 +72,79 @@ body {
     transform: scale(1.05);
 }
 
-#contenu {
-    margin-left: 200px;
-    flex-grow: 1;
-    padding: 20px;
+#menu img {
+    width: 130px;
+    height: 130px;
+    margin-left: -6px;
+    margin-top: -1px;
 }
 
-.all-chat-block{
+.single-chat-block {
+    background-color: antiquewhite;
+               /* Pour la personne qui écris, mettre la bordure de l'autre coté et mettre en violet */
+    
+    padding: 12px;
+    margin: 10px 0;
+    border : 1px solid black;
+    border-left: 6px solid #f06b42; 
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chat-date {
+    font-size: 0.8em; /* ou ajuste selon tes besoins */
+    color: #555; /* optionnel, pour une couleur différente */
+}
+
+.chat-header {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: flex-end;
-    height: 100%;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 5px;
 }
 
 .chatbox {
     position: fixed;
-    left: 200px;
+    left: 200px; /* Utilise la même valeur que l'espace réservé au menu */
     bottom: 0;
-    width: 100%;
-    height: 7.5%;
-    background: antiquewhite;
-    padding: 10px;
+    width: calc(100% - 200px); /* La largeur restante */
+    height: 9%;
+    background: #3f2a56;
+    padding: 0.3%;
     z-index: 100;
     display: flex;
+    align-items: center;
 }
 
 textarea {
-    width: 75%;
-    height: 90%;
-    padding: 5px;
-    font-size: 16px;
+    box-sizing: border-box; /* Pour inclure le padding dans la largeur */
+    flex: 0 0 94%;
+    padding: 0.5%;
+    font-size: 1rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border: 2px solid #ccc;
-    border-radius: 12px;
-    background-color: antiquewhite;
+    border-radius: 8px;
+    background-color: antiquewhite; 
     color: #333;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
     resize: none;
+    margin-right: 1%;
 }
 
-.send-button{
-    width: 5%;
-    height: 100%;
-    margin-left: 15px;
-    background-color: #3f2a56;
+.send-button {
+    margin-left: 0; 
+    padding: 5px 10px;
+    background-color: #f06b42;
     color: antiquewhite;
     border: none;
     cursor: pointer;
     border-radius: 12px;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 #contenu,
 .all-chat-block {
     padding-bottom: 10%;
     /* Doit être >= hauteur de .chatbox */
-}
-
-#menu h1 {
-    color: antiquewhite;
-    margin-left: 20px;
-    text-align: left;
-    margin-top: 20px;
 }

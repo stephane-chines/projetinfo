@@ -123,7 +123,7 @@ async function taskCreateTables() {
       votes INT ,
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       IDUser INT,
-      IDSubject TEXT,
+      IDSubject INT,
       FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject),
       FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser)
       
