@@ -138,8 +138,8 @@ async function taskCreateTables() {
       IDUSER INT,
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       
-      FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
-      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
+      FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion),
+      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser)
     )`);
 
     await client.query(`CREATE TABLE IF NOT EXISTS Images (
