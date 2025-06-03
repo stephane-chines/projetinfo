@@ -16,7 +16,7 @@ Documents.addEventListener("click", () => {
 });
 
 RetourLobby.addEventListener("click", () => {
-    window.location.href = "/Accueil/Accueil.html";
+    window.location.href = "/accueil/Accueil.html";
 });
 
 let allChatBlock = document.createElement('div');
