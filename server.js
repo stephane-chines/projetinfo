@@ -150,10 +150,6 @@ async function taskCreateTables() {
       FOREIGN KEY(IDQuestion) REFERENCES questions(IDQuestion)
     )`);
 
-    
-    
-   
-
     console.log('✅ Tables et contraintes créées ou vérifiées avec succès');
   } catch (err) {
     console.error('Erreur création des tables :', err);
