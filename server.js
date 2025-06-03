@@ -104,7 +104,7 @@ async function taskCreateTables() {
       username TEXT,
       email TEXT,
       professeur BOOLEAN,
-      admin BOOLEAN DEFAULT false,
+      admin BOOLEAN DEFAULT false
       
     )`);
     await client.query(`CREATE TABLE IF NOT EXISTS chat (
@@ -113,7 +113,7 @@ async function taskCreateTables() {
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       username TEXT,
       IDSubject INT,
-      FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject)
+      FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject),
       FOREIGN KEY(IDuser) REFERENCES Utilisateurs(IDUser)
     )`);
     await client.query(`CREATE TABLE IF NOT EXISTS questions (
@@ -125,7 +125,7 @@ async function taskCreateTables() {
       IDUser INT,
       IDSubject TEXT,
       FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject),
-      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
+      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser)
       
     )`);
 
@@ -216,7 +216,7 @@ async function startServer() {
   app.get('/get-chat/:subject', async (req, res) => {
     const subject = req.params.subject;
     try {
-      const result = await pool.query('SELECT * FROM chat WHERE subject = $1', [subject]);
+      const result = await pool.query('SELECT * FROM chat WHERE IDsubject = $1', [subject]);
       res.json(result.rows);
     } catch (err) {
       console.error("Erreur PostgreSQL lors de la lecture du chat :", err);
@@ -246,7 +246,7 @@ async function startServer() {
        'SELECT COUNT(*) AS nbReponses FROM reponses WHERE IDQuestion = $1',
         [id]
     );
-      res.json({ nbReponses: parseInt(result.rows[0].nbreponses, 10) });
+      res.json({ nbreponses: parseInt(result.rows[0].nbreponses, 10) });
     } catch (err) {
      console.error("❌ Erreur PostgreSQL lors de la lecture du nombre de réponses :", err);
      res.status(500).json({ error: "Erreur lors de la lecture du nombre de réponses" });
