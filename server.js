@@ -113,6 +113,7 @@ async function taskCreateTables() {
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       username TEXT,
       IDSubject INT,
+      IDuser INT,
       FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject),
       FOREIGN KEY(IDuser) REFERENCES Utilisateurs(IDUser)
     )`);
