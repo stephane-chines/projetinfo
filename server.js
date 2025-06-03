@@ -167,87 +167,159 @@ async function startServer() {
   await taskCreateTables();
 
   // Routes API
-  app.post('/api/question', async (req, res) => {
-    const { titre, corps, username = 'Utilisateur Anonyme', votes = 0 } = req.body;
+  app.post('/api/question/:IDSubject', async (req, res) => {
+    let { titre, corps, IDUser, votes } = req.body;
+    const IDSubject = req.params.IDSubject;
+
     if (!titre) return res.status(400).json({ error: "Le titre est obligatoire" });
+    if (!votes) votes = 0;
 
     try {
       const result = await pool.query(
-        'INSERT INTO questions (titre, corps, username, votes) VALUES ($1, $2, $3, $4) RETURNING *',
-        [titre, corps, username, votes]
-      );
-      res.json(result.rows[0]);
+      `INSERT INTO questions (titre, corps, IDUser, votes, IDSubject)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING IDQuestion, date`,
+      [titre, corps, IDUser, votes, IDSubject]
+    );
+
+      const { idquestion, date } = result.rows[0];
+
+      res.json({
+        IDQuestion: idquestion,
+        titre,
+        corps,
+        IDUser,
+        votes,
+        date,
+        IDSubject
+      });
+
     } catch (err) {
       console.error("Erreur PostgreSQL lors de l'insertion :", err);
       res.status(500).json({ error: "Erreur lors de l'insertion" });
     }
   });
 
+
   app.post('/api/reponse', async (req, res) => {
-    const { IDQuestion, corps, username = 'Utilisateur Anonyme', votes = 0 } = req.body;
-    if (!IDQuestion || !corps) return res.status(400).json({ error: "IDQuestion et corps sont obligatoires" });
+    const { IDQuestion, corps, IDUser, votes } = req.body;
+
+    if (!IDQuestion || !corps) {
+      return res.status(400).json({ error: "IDQuestion et corps sont obligatoires" });
+    }
+
+    const votesValue = votes || 0;
 
     try {
       const result = await pool.query(
-        'INSERT INTO reponses (IDQuestion, corps, username, votes) VALUES ($1, $2, $3, $4) RETURNING *',
-        [IDQuestion, corps, username, votes]
+        `INSERT INTO reponses (IDQuestion, IDUser, corps, votes)
+        VALUES ($1, $2, $3, $4)
+        RETURNING IDReponse, date`,
+        [IDQuestion, IDUser, corps, votesValue]
       );
-      res.json(result.rows[0]);
+
+      const { idreponse, date } = result.rows[0];
+
+      res.json({
+        IDReponse: idreponse,
+        IDQuestion,
+        corps,
+        IDUser,
+        votes: votesValue,
+        date
+      });
+
     } catch (err) {
       console.error("Erreur PostgreSQL lors de l'insertion de la réponse :", err);
       res.status(500).json({ error: "Erreur lors de l'insertion de la réponse" });
-    }
+   }
   });
-
-  app.get('/get-question', async (req, res) => {
+  app.get('/get-subjects', async (req, res) => {
     try {
-      const result = await pool.query('SELECT * FROM questions');
+      const result = await pool.query('SELECT * FROM Subject');
       res.json(result.rows);
     } catch (err) {
-      console.error("Erreur PostgreSQL lors de la lecture :", err);
-      res.status(500).json({ error: "Erreur lors de la lecture" });
+      console.error("Erreur PostgreSQL lors de la lecture des matières :", err);
+      res.status(500).json({ error: "Erreur lors de la lecture des matières" });
     }
   });
 
-  app.get('/get-chat/:subject', async (req, res) => {
-    const subject = req.params.subject;
+  app.get('/get-question/:IDSubject', async (req, res) => {
+    const IDSubject = req.params.IDSubject;
+
     try {
-      const result = await pool.query('SELECT * FROM chat WHERE IDsubject = $1', [subject]);
+      const result = await pool.query(`
+        SELECT questions.*, Utilisateurs.username
+        FROM questions
+        LEFT JOIN Utilisateurs ON questions.IDUser = Utilisateurs.IDUser
+       WHERE questions.IDSubject = $1
+      `, [IDSubject]);
+
+      res.json(result.rows);
+    } catch (err) {
+      console.error("Erreur PostgreSQL lors de la lecture des questions :", err);
+      res.status(500).json({ error: "Erreur lors de la lecture des questions" });
+   }
+  });
+
+  
+
+  app.get('/get-chat/:IDSubject', async (req, res) => {
+    const IDSubject = req.params.IDSubject;
+
+    try {
+      const result = await pool.query(`
+        SELECT chat.*, Utilisateurs.username
+        FROM chat
+        LEFT JOIN Utilisateurs ON chat.IDUser = Utilisateurs.IDUser
+        WHERE chat.IDSubject = $1
+        ORDER BY chat.date ASC
+      `, [IDSubject]);
+
       res.json(result.rows);
     } catch (err) {
       console.error("Erreur PostgreSQL lors de la lecture du chat :", err);
       res.status(500).json({ error: "Erreur lors de la lecture du chat" });
     }
   });
-  app.get('/get-reponses/:id', async (req, res) => {
-    const id = parseInt(req.params.id, 10);
 
+  app.get('/get-reponses/:id', async (req, res) => {
+    const id = req.params.id;
 
     try {
-      const result = await pool.query(
-        'SELECT * FROM reponses WHERE IDQuestion = $1 ORDER BY date ASC',
-        [id]
-    );
+      const result = await pool.query(`
+        SELECT reponses.*, Utilisateurs.username
+        FROM reponses
+        LEFT JOIN Utilisateurs ON reponses.IDUser = Utilisateurs.IDUser
+        WHERE reponses.IDQuestion = $1
+      `, [id]);
+
       res.json(result.rows);
     } catch (err) {
-      console.error("❌ Erreur PostgreSQL lors de la lecture des réponses :", err);
+      console.error("Erreur PostgreSQL lors de la lecture des réponses :", err);
       res.status(500).json({ error: "Erreur lors de la lecture des réponses" });
     }
   });
+
   app.get('/get-nb-reponses/:id', async (req, res) => {
-    const id = parseInt(req.params.id, 10);
+    const id = req.params.id;
 
     try {
       const result = await pool.query(
-       'SELECT COUNT(*) AS nbReponses FROM reponses WHERE IDQuestion = $1',
-        [id]
-    );
-      res.json({ nbreponses: parseInt(result.rows[0].nbreponses, 10) });
+        'SELECT COUNT(*) AS "nbReponses" FROM reponses WHERE IDQuestion = $1',
+       [id]
+      );
+
+    // Le résultat de COUNT(*) est retourné comme une chaîne, on peut le convertir en nombre si besoin
+      const nbReponses = parseInt(result.rows[0].nbReponses, 10);
+
+      res.json({ nbReponses });
     } catch (err) {
-     console.error("❌ Erreur PostgreSQL lors de la lecture du nombre de réponses :", err);
-     res.status(500).json({ error: "Erreur lors de la lecture du nombre de réponses" });
+      console.error("Erreur PostgreSQL lors de la lecture du nombre de réponses :", err);
+      res.status(500).json({ error: "Erreur lors de la lecture du nombre de réponses" });
     }
   });
+
   app.get('/get-votes-reponse/:id', async (req, res) => {
     const id = parseInt(req.params.id, 10);
 
@@ -280,19 +352,40 @@ async function startServer() {
       res.status(500).json({ error: "Erreur lors de la lecture des votes" });
     }
   });
-  app.get('/get-nb-chats/:subject', async (req, res) => {
-    const subject = req.params.subject;
+  app.get('/get-nb-chats/:IDSubject', async (req, res) => {
+    const IDSubject = req.params.IDSubject;
+
     try {
       const result = await pool.query(
-        'SELECT COUNT(*) AS nbChats FROM chat WHERE subject = $1',
-        [subject]
+        'SELECT COUNT(*) AS nbchats FROM chat WHERE IDSubject = $1',
+       [IDSubject]
       );
-      res.json({ nbchats: parseInt(result.rows[0].nbchats, 10) });
+
+      const nbchats = parseInt(result.rows[0].nbchats, 10);
+
+      res.json({ nbchats });
     } catch (err) {
-      console.error("❌ Erreur PostgreSQL lors de la lecture du nombre de chats :", err);
+      console.error("Erreur PostgreSQL lors de la lecture du nombre de chats :", err);
       res.status(500).json({ error: "Erreur lors de la lecture du nombre de chats" });
     }
   });
+  app.post('/api/new-chat', async (req, res) => {
+    const { corps, IDUser, IDSubject } = req.body;
+
+    try {
+      const result = await pool.query(
+        'INSERT INTO chat (corps, IDUser, IDSubject) VALUES ($1, $2, $3) RETURNING IDChat, date',
+        [corps, IDUser, IDSubject]
+      );
+
+      const newChat = result.rows[0];
+     res.json({ IDChat: newChat.IDChat, corps, IDUser, date: newChat.date, IDSubject });
+    } catch (err) {
+      console.error("Erreur PostgreSQL lors de l'insertion du chat :", err);
+      res.status(500).json({ error: "Erreur lors de l'insertion du chat" });
+    }
+  });
+
 
 
 
@@ -300,54 +393,77 @@ async function startServer() {
 
 
   app.post('/api/inscription', async (req, res) => {
-    const { email, motdepasse, prenom, nom, professeur, username } = req.body;
-    if (!email || !motdepasse) return res.status(400).json({ error: "Email et mot de passe requis" });
+    const { email, motdepasse, prenom, nom, professeur } = req.body;
+    const username = prenom + " " + nom;
+
+    if (!email) return res.status(400).json({ error: "Le mail est obligatoire" });
+    if (!motdepasse) return res.status(400).json({ error: "Le mot de passe est obligatoire" });
 
     try {
-      await pool.query(
-        'INSERT INTO Utilisateurs (email, motdepasse, prenom, nom, professeur, username) VALUES ($1, $2, $3, $4, $5, $6)',
+      const result = await pool.query(
+        `INSERT INTO Utilisateurs (email, motdepasse, prenom, nom, professeur, username)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING *`,
         [email, motdepasse, prenom, nom, professeur, username]
       );
-      res.json({ email, motdepasse, prenom, nom, professeur, username });
+
+      const user = result.rows[0];
+      res.status(201).json(user);
+
     } catch (err) {
       console.error("Erreur PostgreSQL lors de l'insertion :", err);
       res.status(500).json({ error: "Erreur lors de l'insertion" });
     }
   });
 
+
   app.post('/api/connexion', async (req, res) => {
     const { email, motdepasse } = req.body;
-    if (!email || !motdepasse) return res.status(400).json({ error: "Email et mot de passe requis" });
 
-    try { 
-      const result = await pool.query(
-        'SELECT * FROM Utilisateurs WHERE email = $1 AND motdepasse = $2',
-        [email, motdepasse]
-      );
-      const user = result.rows[0];
-      if (!user) return res.status(401).json({ error: "Email ou mot de passe incorrect" });
-      res.json({ message: "Connexion réussie", prenom: user.prenom, nom: user.nom, username: user.username });
-    } catch (err) {
-      console.error("Erreur PostgreSQL lors de la connexion :", err);
-      res.status(500).json({ error: "Erreur serveur" });
+    if (!email || !motdepasse) {
+      return res.status(400).json({ error: "Email et mot de passe requis" });
     }
-  });
-  app.post('/api/upvote', async (req, res) => {
-    const { IDQuestion } = req.body;
-    if (!IDQuestion) return res.status(400).json({ error: "IDQuestion requis" });
 
     try {
       const result = await pool.query(
-        'UPDATE questions SET votes = votes + 1 WHERE IDQuestion = $1 RETURNING votes',
-        [IDQuestion]
-      );
-      if (result.rowCount === 0) return res.status(404).json({ error: "Question non trouvée" });
-      res.json({ votes: result.rows[0].votes });
+        'SELECT * FROM Utilisateurs WHERE email = $1 AND motdepasse = $2',
+        [email, motdepasse]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Email ou mot de passe incorrect" });
+    }
+
+    const user = result.rows[0];
+    console.log("ROW UTILISATEUR :", user);
+
+    res.json({
+      message: "Connexion réussie",
+      prenom: user.prenom,
+        nom: user.nom,
+        username: user.username,
+        IDUser: user.iduser
+    });
+
     } catch (err) {
-      console.error("❌ Erreur upvote :", err);
-      res.status(500).json({ error: "Erreur serveur" });
+        console.error("Erreur PostgreSQL lors de la vérification :", err);
+        res.status(500).json({ error: "Erreur serveur" });
     }
   });
+
+  app.post('/api/vote', async (req, res) => {
+    const { IDQuestion } = req.body;
+    if (!IDQuestion) return res.status(400).json({ error: "ID Manquante" });
+
+    try {
+      await pool.query('UPDATE questions SET votes = votes + 1 WHERE IDQuestion = $1', [IDQuestion]);
+      res.json({ success: true });
+    } catch (err) {
+      console.error("Erreur PostgreSQL lors du vote :", err);
+      res.status(500).json({ error: "Erreur lors du vote" });
+    }
+  });
+
 
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
