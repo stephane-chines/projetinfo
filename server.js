@@ -62,13 +62,46 @@ async function taskCreateTables() {
       subject TEXT,
       type TEXT
     )`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS Subject (
+      IDSubject SERIAL PRIMARY KEY,
+      subject TEXT UNIQUE,
+      Semestre INTEGER,
+      imageLink TEXT
+    )`);
+    await pool.query(`INSERT INTO Subject 
+      (IDSubject, subject, Semestre, imageLink) VALUES
+      (0, 'FPGA', 1, 'image/FPGA.jpg'),
+      (1, 'Microcontrôleur', 1, 'image/Electronique-numérique-Microcontrolleur.jpg'),
+      (2, 'Ethique', 1, 'image/Ethique.jpg'),
+      (3, 'Gestion de Projet', 1, 'image/Gestion-de-projets.jpg'),
+      (4, 'Langage C', 1, 'image/Langage-C.jpg'),
+      (5, 'Mécanique Quantique', 1, 'image/Mécanique-quantique.jpg'),
+      (6, 'Oddyssée', 1, 'image/Oddyssée.png'),
+      (7, 'Probabilités Statistiques', 1, 'image/Probabilités-Statistiques.jpg'),
+      (8, 'Transformations Intégrales', 1, 'image/Transformations-intégrales.png'),
+      (9, 'Analyse des signaux', 2, 'image/Analyse-des-signaux.jpg'),
+      (10, 'Automatique', 2, 'image/Automatique.jpg'),
+      (11, 'Bases de données', 2, 'image/Base-de-données.jpg'),
+      (12, 'Comptabilité', 2, 'image/Comptabilité.jpg'),
+      (13, 'Economie', 2, 'image/Economie.png'),
+      (14, 'Electronique Analogique', 2, 'image/Electronique-analogique.jpg'),
+      (15, 'Marketing', 2, 'image/Marketing.png'),
+      (16, 'Physique du Solide', 2, 'image/Physique-du-solide.png'),
+      (17, 'Programmation Orientée Objet', 2, 'image/Programation-orienté-objet.jpg'),
+      (18, 'Réseaux', 2, 'image/Réseau.jpg')
+    ON CONFLICT (IDSubject) DO NOTHING;
+    `);
+
+
 
     await client.query(`CREATE TABLE IF NOT EXISTS chat (
       IDChat SERIAL PRIMARY KEY,
       corps TEXT,
       date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       username TEXT,
-      subject TEXT
+      IDSubject INT,
+      FOREIGN KEY(IDSubject) REFERENCES Subject(IDSubject)
+      
     )`);
 
     await client.query(`CREATE TABLE IF NOT EXISTS Utilisateurs (
@@ -96,7 +129,8 @@ async function taskCreateTables() {
       url TEXT,
       IDUser INT,
       subject TEXT,
-      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser)
+      FOREIGN KEY(IDUser) REFERENCES Utilisateurs(IDUser),
+      FOREIGN KEY(subjectID) REFERENCES Subject(IDSubject)
     )`);
 
     await client.query(`CREATE TABLE IF NOT EXISTS reponses (
