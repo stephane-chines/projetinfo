@@ -1,17 +1,17 @@
 const username = localStorage.getItem("username");
 const params = new URLSearchParams(window.location.search);
 const idSubject = params.get('idSubject'); // récupère ?idSubject=..
-
-fetch(`/get-question/${idSubject}`)
-  .then(res => res.json())
-  .then(data => {
-    data.sort((a, b) => b.votes - a.votes); // Tri des questions par nombre de votes décroissant
-    data.forEach((q) => {
-      createQuestionBlock(q.IDQuestion, q.titre, q.corps, q.votes, [], [], q.username, q.date);
-    });
-  })
-  .catch(err => console.error("Erreur fetch questions:", err));
-
+if (idSubject && idSubject !== 'null') {
+  fetch(`/get-question/${idSubject}`)
+    .then(res => res.json())
+    .then(data => {
+      data.sort((a, b) => b.votes - a.votes); // Tri des questions par nombre de votes décroissant
+      data.forEach((q) => {
+        createQuestionBlock(q.IDQuestion, q.titre, q.corps, q.votes, [], [], q.username, q.date);
+      });
+    })
+    .catch(err => console.error("Erreur fetch questions:", err));
+  }
 const boutonAjouterQuestion = document.querySelector("#AjouterQuestion");
 const BoutonEnregistrer = document.querySelector("#Enregistrer");
 const SaisieTitreQuestion = document.querySelector("#SaisieTitreQuestion");
