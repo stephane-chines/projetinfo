@@ -41,7 +41,7 @@ BoutonConnexion.addEventListener('click', () => {
 
 // Redirection vers la page d'inscription
 BoutonInscription.addEventListener('click', () => {
-    window.location.href = '/Inscription/Inscription.html';
+    window.location.href = '/Inscription/inscription.html';
 });
 
 // Chat animé
