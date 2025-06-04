@@ -1,7 +1,8 @@
 const username = localStorage.getItem("username");
+const params = new URLSearchParams(window.location.search);
+const idSubject = params.get('idSubject'); // récupère ?idSubject=..
 
-
-fetch('/get-question/')
+fetch('/get-question/${idSubject}')
   .then(res => res.json())
   .then(data => {
     data.sort((a, b) => b.votes - a.votes); // Tri des questions par nombre de votes décroissant
