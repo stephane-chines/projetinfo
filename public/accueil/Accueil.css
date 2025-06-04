@@ -220,3 +220,22 @@ body {
     font-size: 80%;
     pointer-events: none;
 }
+
+.matiere-container {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#Saisie-Matiere {
+    width: 500px;      
+    font-size: 1.2em;   
+    padding: 12px;     
+}
+
+#choix-semestre {
+    padding: 5px;
+}

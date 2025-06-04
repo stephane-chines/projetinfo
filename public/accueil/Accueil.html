@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/accueil/Accueil.css">
     <title>Accueil</title>
+    <link rel="icon" href="SmallLogo.png" type="image/png" sizes="128x128">
 </head>
 <body>
     <header class="navbar">
@@ -26,6 +27,10 @@
         <img id="logo" src="/accueil/Logo.png" alt="Logo">
     </section>
 
+    <div class="bouton-container">
+        <button id="Nouvelle-Matiere">Ajouter une Matiere</button>
+    </div>
+
     <!-- Barre de recherche -->
     <section class="search-container">
         <input type="text" id = "recherche" placeholder="Recherche...">
@@ -33,11 +38,28 @@
     </section>
 
      <div class="gallery-container">
+        <div class="matiere-container">
+            <input id="Saisie-Matiere" placeholder="Entrez le nom de la matière">
+            <input type = "file" id="Saisie-Fichier" accept=".jpg,.jpeg" placeholder="image">
+            <select id="choix-semestre" aria-placeholder="Sélectionnez un semestre">
+            <option value="" disabled selected>Sélectionnez un semestre</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            </select>
+            <button id="Enregistrer">Enregistrer</button>
+
+        </div>
+
+
+
         <section class="gallery">
-            <div class="gallery-group" id="gallery">
+            <div class="gallery-group" id="gallery">    
             </div> 
         </section>
     </div>
+
+    
+    
 
     <script src="/accueil/Accueil.js"></script>
 </body>

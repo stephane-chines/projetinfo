@@ -1,6 +1,11 @@
 const username = localStorage.getItem("username");
+// Récupère l'ID de la matière sélectionnée
+const IDSubject = parseInt(localStorage.getItem("selectedSubjectID"), 10);
+
+
+
 const params = new URLSearchParams(window.location.search);
-const IDSubject = params.get('IDSubject'); // récupère ?idSubject=..
+
 if (IDSubject && IDSubject !== 'null') {
   fetch(`/get-question/${IDSubject}`)
     .then(res => res.json())
