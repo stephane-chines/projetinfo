@@ -223,7 +223,7 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
     // On incrémente le nombre de votes dans la BDD et on met à jour l'affichage
     // Ce qui permet d'éviter de faire une nouvelle requête pour récupérer le nombre de votes
     votes++;
-    fetch('/api/vote' + IDQuestion, {
+    fetch(`/api/vote/${IDQuestion}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ IDQuestion: IDQuestion })
@@ -254,7 +254,7 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
 
   function renderAllReponses() {
     let Réponses = [];
-    fetch('/get-reponses/' + IDQuestion)
+    fetch(`/get-reponses/${IDSubject}`)
       .then(res => res.json())
       .then(data => {
         Réponses.length = 0;
@@ -408,7 +408,7 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
     const usernameReponse = username; // Pour l'affichage local, on peut le changer plus tard
     const txt = SaisieRéponses.value.trim();
 
-    fetch('/api/reponse', {
+    fetch(`/api/reponses/${IDQuestion}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ IDQuestion: IDQuestion, corps: txt, username: usernameReponse, votes: 0 })

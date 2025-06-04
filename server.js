@@ -261,7 +261,7 @@ async function startServer() {
 
   
 
-  app.get('/get-chat/:IDSubject', async (req, res) => {
+  app.get(`/get-chat/:IDSubject`, async (req, res) => {
     const IDSubject = req.params.IDSubject;
 
     try {
@@ -280,7 +280,7 @@ async function startServer() {
     }
   });
 
-  app.get('/get-reponses/:id', async (req, res) => {
+  app.get(`/get-reponses/:id`, async (req, res) => {
     const id = parseInt(req.params.id,10);
 
     try {
