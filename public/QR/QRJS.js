@@ -206,7 +206,7 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
 
   const boutonVote = document.createElement("button");
   // On récupère le nombre de votes pour la question depuis la BDD
-  fetch('/get-votes-question/' + IDQuestion)
+  fetch(`/get-votes-questions/${IDQuestion}`)
     .then(res => res.json())
     .then(data => {
       votes = data.votes
