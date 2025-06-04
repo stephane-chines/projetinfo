@@ -166,7 +166,7 @@ async function startServer() {
   // Routes API
   app.post('/api/question/:IDSubject', async (req, res) => {
     let { titre, corps, IDUser, votes } = req.body;
-    const IDSubject = req.params.IDSubject;
+    const IDSubject = parseInt(req.params.IDSubject);
 
     if (!titre) return res.status(400).json({ error: "Le titre est obligatoire" });
     if (!votes) votes = 0;
