@@ -1,8 +1,8 @@
 const username = localStorage.getItem("username");
 const params = new URLSearchParams(window.location.search);
-const idSubject = params.get('idSubject'); // récupère ?idSubject=..
-if (idSubject && idSubject !== 'null') {
-  fetch(`/get-question/${idSubject}`)
+const IDSubject = params.get('IDSubject'); // récupère ?idSubject=..
+if (IDSubject && IDSubject !== 'null') {
+  fetch(`/get-question/${IDSubject}`)
     .then(res => res.json())
     .then(data => {
       data.sort((a, b) => b.votes - a.votes); // Tri des questions par nombre de votes décroissant
@@ -49,7 +49,7 @@ RetourLobby.addEventListener("click", () => {
 
 filtreVotes.addEventListener("click", (event) => {
   event.stopPropagation();
-  fetch(`/get-question/${idSubject}`)
+  fetch(`/get-question/${IDSubject}`)
     .then(res => res.json())
     .then(data => {
       data.sort((a, b) => b.votes - a.votes); // Tri des questions par nombre de votes décroissant
@@ -65,7 +65,7 @@ const filtreCommentaires = document.createElement("button");
 filtreCommentaires.textContent = "Commentaires";
 filtreCommentaires.addEventListener("click", async (event) => {
   event.stopPropagation();
-  const res = await fetch(`/get-question/${idSubject}`);
+  const res = await fetch(`/get-question/${IDSubject}`);
   const data = await res.json();
 
   // Pour chaque question, récupère le nombre de réponses
@@ -89,7 +89,7 @@ const filtreDate = document.createElement("button");
 filtreDate.textContent = "Date";
 filtreDate.addEventListener("click", (event) => {
   event.stopPropagation();
-  fetch(`/get-question/${idSubject}`)
+  fetch(`/get-question/${IDSubject}`)
     .then(res => res.json())
     .then(data => {
       data.sort((a, b) => new Date(b.date) - new Date(a.date)); // Tri par date décroissante
