@@ -223,7 +223,7 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
     // On incrémente le nombre de votes dans la BDD et on met à jour l'affichage
     // Ce qui permet d'éviter de faire une nouvelle requête pour récupérer le nombre de votes
     votes++;
-    fetch('/api/vote', {
+    fetch('/api/vote' + IDQuestion, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ IDQuestion: IDQuestion })
@@ -536,7 +536,7 @@ BoutonEnregistrer.addEventListener("click", () => {
         loaded++;
         if (loaded === fichiersImage.length) {
           // Envoie la question puis les images
-          fetch('/api/question:IDSubject', {
+          fetch(`/api/question/${IDSubject}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ titre: TitreQuestion, corps: CorpsQuestion, username: username })
@@ -559,7 +559,7 @@ BoutonEnregistrer.addEventListener("click", () => {
     }
   } else {
     // Pas d'image
-    fetch('/api/question:IDSubject', {
+    fetch(`/api/question/${IDSubject}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ titre: TitreQuestion, corps: CorpsQuestion, username: username })
