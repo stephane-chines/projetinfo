@@ -241,8 +241,8 @@ async function startServer() {
     }
   });
 
-  app.get('/get-question/:IDSubject', async (req, res) => {
-    const IDSubject = req.params.IDSubject;
+  app.get(`/get-question/:IDSubject`, async (req, res) => {
+    const IDSubject = parseInt(req.params.IDSubject, 10);
 
     try {
       const result = await pool.query(`
@@ -252,7 +252,7 @@ async function startServer() {
         WHERE questions.IDSubject = $1
       `, [IDSubject]);
 
-      res.json(result.rows);
+    res.json(result.rows);
     } catch (err) {
       console.error("Erreur PostgreSQL lors de la lecture des questions :", err);
       res.status(500).json({ error: "Erreur lors de la lecture des questions" });
