@@ -450,6 +450,7 @@ async function startServer() {
 
   app.post('/api/vote', async (req, res) => {
     const IDQuestion = parseInt(req.body.IDQuestion, 10);
+    console.log("Body reçu :", req.body);
     if (isNaN(IDQuestion)) return res.status(400).json({ error: "IDQuestion invalide" });
 
     try {
