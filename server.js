@@ -449,17 +449,24 @@ async function startServer() {
   });
 
   app.post('/api/vote', async (req, res) => {
-    const { IDQuestion } = req.body;
-    if (!IDQuestion) return res.status(400).json({ error: "ID Manquante" });
+    const IDQuestion = parseInt(req.body.IDQuestion, 10);
+    if (isNaN(IDQuestion)) return res.status(400).json({ error: "IDQuestion invalide" });
 
     try {
-      await pool.query('UPDATE questions SET votes = votes + 1 WHERE IDQuestion = $1', [IDQuestion]);
-      res.json({ success: true });
+      const result = await pool.query(
+        'UPDATE questions SET votes = votes + 1 WHERE IDQuestion = $1 RETURNING votes',
+        [IDQuestion]
+      );
+      if (result.rowCount === 0) {
+        return res.status(404).json({ error: "Question non trouvée" });
+      }
+      res.json({ success: true, votes: result.rows[0].votes });
     } catch (err) {
       console.error("Erreur PostgreSQL lors du vote :", err);
       res.status(500).json({ error: "Erreur lors du vote" });
     }
   });
+
 
 
   const PORT = process.env.PORT || 3000;
