@@ -1,7 +1,7 @@
 const username = localStorage.getItem("username");
 
 
-fetch('/get-question')
+fetch('/get-question/')
   .then(res => res.json())
   .then(data => {
     data.sort((a, b) => b.votes - a.votes); // Tri des questions par nombre de votes décroissant

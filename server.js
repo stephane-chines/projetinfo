@@ -249,7 +249,7 @@ async function startServer() {
         SELECT questions.*, Utilisateurs.username
         FROM questions
         LEFT JOIN Utilisateurs ON questions.IDUser = Utilisateurs.IDUser
-       WHERE questions.IDSubject = $1
+        WHERE questions.IDSubject = $1
       `, [IDSubject]);
 
       res.json(result.rows);
