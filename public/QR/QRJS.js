@@ -536,7 +536,7 @@ BoutonEnregistrer.addEventListener("click", () => {
         loaded++;
         if (loaded === fichiersImage.length) {
           // Envoie la question puis les images
-          fetch('/api/question', {
+          fetch('/api/question:IDSubject', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ titre: TitreQuestion, corps: CorpsQuestion, username: username })
@@ -559,7 +559,7 @@ BoutonEnregistrer.addEventListener("click", () => {
     }
   } else {
     // Pas d'image
-    fetch('/api/question', {
+    fetch('/api/question:IDSubject', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ titre: TitreQuestion, corps: CorpsQuestion, username: username })
