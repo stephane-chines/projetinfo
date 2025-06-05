@@ -1,7 +1,7 @@
 const username = localStorage.getItem("username");
 // Récupère l'ID de la matière sélectionnée
 const IDSubject = parseInt(localStorage.getItem("selectedSubjectID"), 10);
-const IDQuestion = parseInt(localStorage.getItem("selctedQuestionID"), 10);
+
 
 
 const params = new URLSearchParams(window.location.search);
@@ -206,7 +206,7 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
 
   const boutonVote = document.createElement("button");
   // On récupère le nombre de votes pour la question depuis la BDD
-  fetch(`/get-votes-questions/${IDQuestion}`)
+  fetch(`/get-votes-question/${IDQuestion}`)
     .then(res => res.json())
     .then(data => {
       votes = data.votes
