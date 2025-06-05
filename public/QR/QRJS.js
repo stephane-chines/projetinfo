@@ -247,7 +247,7 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
     .then(data => {
       const nbReponses = data.nbReponses || 0; // Si pas de réponses, on met 0
       BoutonRéponses.innerHTML =  `${SVGBoutonReponses} ${nbReponses}</span></strong>`;
-    });
+  });
 
   const ZoneRéponses = document.createElement("div");
   ZoneRéponses.style.display = "none";
