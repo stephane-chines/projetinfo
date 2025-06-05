@@ -386,12 +386,6 @@ async function startServer() {
     }
   });
 
-
-
-
-
-
-
   app.post('/api/inscription', async (req, res) => {
     const { email, motdepasse, prenom, nom, professeur } = req.body;
     const username = prenom + " " + nom;
@@ -470,13 +464,9 @@ async function startServer() {
       res.status(500).json({ error: "Erreur lors du vote" });
     }
   });
-
-
-
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`Serveur démarré sur https://projetinfo.onrender.com/`);
   });
 }
-
 startServer();
