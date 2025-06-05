@@ -342,6 +342,7 @@ async function startServer() {
         'SELECT votes FROM questions WHERE IDQuestion = $1',
         [id]
       );
+      const row = result.rows[0];
       if (!row) return res.status(404).json({ error: `Question non trouvée id : ${id}` });
       res.json({ votes: row.votes})
     } catch (err) {
@@ -349,7 +350,7 @@ async function startServer() {
      res.status(500).json({ error: "Erreur lors de la lecture des votes" });
     }
   });
-  
+
   app.get('/get-nb-chats/:IDSubject', async (req, res) => {
     const IDSubject = req.params.IDSubject;
 
