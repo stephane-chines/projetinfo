@@ -336,6 +336,8 @@ async function startServer() {
   app.get('/get-votes-question/:id', async (req, res) => {
     const id = parseInt(req.params.id, 10);
     console.log("ID reçu :", id);
+    console.log("IDQuestion utilisé :", IDQuestion);
+
 
     try {
       const result = await pool.query(
