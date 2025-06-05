@@ -8,7 +8,7 @@ const Documents = document.getElementById("Documents");
 const RetourLobby = document.getElementById("bouton-menu");
 
 QuestionsReponses.addEventListener("click", () => {
-    window.location.href = "/QR";
+    window.location.href = "/QR/index.html";
 });
 
 Documents.addEventListener("click", () => {
@@ -21,6 +21,9 @@ RetourLobby.addEventListener("click", () => {
 
 let allChatBlock = document.createElement('div');
 allChatBlock.className = 'all-chat-block';
+
+
+chatBox.className = 'chatbox';
 
 const chatInput = document.createElement('textarea');
 chatInput.className = 'chat-input';
@@ -75,7 +78,6 @@ function createSingleChatBlock(IDChat, corps, date, username) {
     allChatBlock.appendChild(singleChatBlock);
 }
 
-let nbChats = 0;
 
 function loadAllChats(IDSubject) {
     fetch(`/get-chat/${IDSubject}`, {

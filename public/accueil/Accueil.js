@@ -57,24 +57,6 @@ function createSubjectButton(subjectName, subjectID, subjectImage, container) {
 
     container.appendChild(button);
 }
-// Initialisation de IDQuestion (à adapter selon comment tu veux la passer)
-let IDQuestion = null;
-
-// Essai de récupération dans localStorage
-const storedID = localStorage.getItem("IDQuestion");
-if (storedID) {
-    IDQuestion = storedID;
-}
-
-// Ou depuis l'URL
-const params = new URLSearchParams(window.location.search);
-const urlID = params.get("idQuestion");
-if (urlID) {
-    IDQuestion = urlID;
-}
-
-// Ensuite tu peux utiliser IDQuestion dans ce fichier, ou le transmettre à d'autres fonctions
-console.log("IDQuestion initialisé à :", IDQuestion);
 
 // Récupération des matières
 fetch('/get-subjects')
