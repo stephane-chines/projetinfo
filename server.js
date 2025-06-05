@@ -333,25 +333,23 @@ async function startServer() {
      res.status(500).json({ error: "Erreur lors de la lecture des votes" });
     }
   });
+
+
   app.get('/get-votes-question/:id', async (req, res) => {
     const id = parseInt(req.params.id, 10);
-    console.log("ID reçu :", id);
-    // console.log("IDQuestion utilisé :", IDQuestion);
-
-
     try {
-      const result = await pool.query(
+      const resul = await pool.query(
         'SELECT votes FROM questions WHERE IDQuestion = $1',
-       [id]
+        [id]
       );
-      const row = result.rows[0];
-      if (!row) return res.status(404).json({ error: "Question non trouvée" });
-      res.json({ votes: row.votes });
+      if (!row) return res.status(404).json({ error: `Question non trouvée id : ${id}` });
+      res.json({ votes: row.votes})
     } catch (err) {
       console.error("❌ Erreur PostgreSQL lors de la lecture des votes :", err);
-      res.status(500).json({ error: "Erreur lors de la lecture des votes" });
+     res.status(500).json({ error: "Erreur lors de la lecture des votes" });
     }
   });
+  
   app.get('/get-nb-chats/:IDSubject', async (req, res) => {
     const IDSubject = req.params.IDSubject;
 
