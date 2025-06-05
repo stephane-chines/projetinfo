@@ -1,7 +1,7 @@
 const username = localStorage.getItem("username");
 // Récupère l'ID de la matière sélectionnée
 const IDSubject = parseInt(localStorage.getItem("selectedSubjectID"), 10);
-
+const IDQuestion = parseInt(localStorage.getItem("selctedQuestionID"), 10);
 
 
 const params = new URLSearchParams(window.location.search);
