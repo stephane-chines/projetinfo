@@ -226,7 +226,7 @@ function createQuestionBlock(IDQuestion, TitreQuestion, CorpsQuestion, votes, re
     fetch(`/api/vote/${IDQuestion}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ IDQuestion: IDQuestion })
+      body: JSON.stringify({ })
     })
       .catch(err => console.error("Erreur lors du vote :", err));
     boutonVote.innerHTML = `${SVGBoutonVote}${votes}</span></strong>`;
